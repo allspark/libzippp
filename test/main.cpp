@@ -284,10 +284,3 @@ TEST_F(reading_test, loop)
         ASSERT_STREQ(names[i++].c_str(), s.name);
     }
 }
-
-int main(int argc, char **argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-
-    return RUN_ALL_TESTS();
-}
