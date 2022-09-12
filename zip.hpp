@@ -812,11 +812,11 @@ public:
      * \return the opened file
      * \throw std::runtime_error on errors
      */
-    file open(const std::string& name, flags_t flags = 0, const std::string& password = "")
+    file open(const std::string& name, flags_t flags = 0, const std::string& password = "") const
     {
         struct zip_file* file;
 
-        if (password.size() > 0)
+        if (!password.empty())
             file = zip_fopen_encrypted(handle_.get(), name.c_str(), flags, password.c_str());
         else
             file = zip_fopen(handle_.get(), name.c_str(), flags);
@@ -836,11 +836,11 @@ public:
      * \return the opened file
      * \throw std::runtime_error on errors
      */
-    file open(uint64_t index, flags_t flags = 0, const std::string& password = "")
+    file open(uint64_t index, flags_t flags = 0, const std::string& password = "") const
     {
         struct zip_file* file;
 
-        if (password.size() > 0)
+        if (!password.empty())
             file = zip_fopen_index_encrypted(handle_.get(), index, flags, password.c_str());
         else
             file = zip_fopen_index(handle_.get(), index, flags);
