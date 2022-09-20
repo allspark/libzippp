@@ -19,9 +19,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(zip VERSION 1.0.0)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${zip_SOURCE_DIR}/cmake)
-
-find_package(ZIP REQUIRED)
+find_package(libzip REQUIRED)
 include(GNUInstallDirs)
 
 
@@ -35,7 +33,7 @@ add_library(libzippp::libzippp ALIAS libzippp)
 
 target_compile_features(libzippp INTERFACE cxx_std_14)
 
-target_link_libraries(libzippp INTERFACE ${ZIP_LIBRARIES})
+target_link_libraries(libzippp INTERFACE libzip::zip)
 
 
 target_include_directories(libzippp INTERFACE
@@ -65,7 +63,6 @@ install(EXPORT libzipppTargets NAMESPACE libzippp:: DESTINATION "${CMAKE_INSTALL
 
 install(FILES
         "cmake/libzipppConfig.cmake"
-        "cmake/FindZIP.cmake"
         "${version_config}"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/libzippp" COMPONENT dev)
 
