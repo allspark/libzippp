@@ -768,6 +768,34 @@ public:
     }
 
     /**
+     * Add a encrypted file to the archive.
+     *
+     * \param source the source
+     * \param name the name entry in the archive
+     * \param method the encryption method
+     * \param flags the optional flags
+     * \param password the optional password
+     * \return the new index in the archive
+     * \throw std::runtime_error on errors
+     * \see source::file
+     * \see source::buffer
+     */
+    int64_t add_encrypted(const source& source, const std::string& name, uint64_t method, flags_t flags = 0, const std::string& password = "")
+    {
+        auto src = source(handle_.get());
+        auto ret = zip_file_add(handle_.get(), name.c_str(), src, flags);
+
+        if (ret < 0) {
+            zip_source_free(src);
+            throw std::runtime_error(zip_strerror(handle_.get()));
+        }
+
+        set_file_encryption(ret, method, password);
+
+        return ret;
+    }
+
+    /**
      * Create a directory in the archive.
      *
      * \param directory the directory name
@@ -876,6 +904,22 @@ public:
     inline void set_file_compression(uint64_t index, int32_t comp, uint32_t flags = 0)
     {
         if (zip_set_file_compression(handle_.get(), index, comp, flags) < 0)
+            throw std::runtime_error(zip_strerror(handle_.get()));
+    }
+
+    /**
+     * Set file encryption method.
+     *
+     * \param index the file index in the archive
+     * \param method the encryption method
+     * \param password the optional password
+     * \throw std::runtime_error on errors
+     */
+    inline void set_file_encryption(uint64_t index, uint64_t method, const std::string& password = "")
+    {
+        auto cstr = !password.empty() ? password.c_str() : nullptr;
+
+        if (zip_file_set_encryption(handle_.get(), index, method, cstr) < 0)
             throw std::runtime_error(zip_strerror(handle_.get()));
     }
 
